@@ -128,3 +128,4 @@ pheatmap(zscore_matrix,
          main = "Heatmap of Contrast-of-Contrasts",
          fontsize_col = 10)
 ```
+![heatmap](figures/heatmap_contrasts_dge.png)
