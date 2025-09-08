@@ -1,5 +1,5 @@
 # Transcriptomics_Coffee-Rust_contrasts
-This script was developed to perform a contrast-of-contrasts analysis using edgeR to evaluate transcriptional dynamics in coffee plants infected with rust (*Hemileia vastatrix*) with different levels of severity. Specifically, it compares the gene expression differences between high vs. low treatments at 24 hours against those observed at 0 hours, to identify genes whose regulation is time-dependent and condition-specific.
+This script was developed to perform a contrast-of-contrasts analysis using edgeR to evaluate transcriptional dynamics in coffee plants infected with rust (*Hemileia vastatrix*) with different levels of severity. Specifically, it compares the gene expression differences between high vs. low severity at 24 hours against those observed at 0 hours, to identify genes whose regulation is time-dependent and response-specific.
 
 The workflow includes the following key steps:
 1. Preprocessing of raw counts: loading the count matrix, assigning groups, and filtering lowly expressed genes.
