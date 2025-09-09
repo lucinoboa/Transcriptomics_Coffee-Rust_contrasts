@@ -1,6 +1,11 @@
 # Transcriptomics_Coffee-Rust_contrasts
 This script was developed to perform a contrast-of-contrasts analysis using edgeR to evaluate transcriptional dynamics in coffee plants infected with rust (*Hemileia vastatrix*) with different levels of severity. Specifically, it compares the gene expression differences between high vs. low severity at 24 hours against those observed at 0 hours, to identify genes whose regulation is time-dependent and response-specific.
 
+# Part I: Heatmap of differentially expressed genes from contrasts of contrasts between high vs. low severity at 24 hours vs 0 hours. 
+
+## Function 
+(low_24h - high_24h) - (low_0h - high_24 h)
+
 The workflow includes the following key steps:
 1. Preprocessing of raw counts: loading the count matrix, assigning groups, and filtering lowly expressed genes.
 2. Normalization and dispersion estimation: adjusting library sizes and estimating dispersion parameters to ensure robust statistical modeling.
