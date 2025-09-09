@@ -216,7 +216,7 @@ contrast_vector["group_low_0h_vs_high_0h"]   <- -1
 res_contrast <- results(dds, contrast = contrast_vector)
 ```
 
-# Step 7: Create DEG tables
+## Step 7: Create DEG tables
 ```r
 res_contrast_df <- as.data.frame(res_contrast) %>%
   rownames_to_column("gene_id")
@@ -227,7 +227,7 @@ deg_gene_id <- res_contrast_df %>%
   pull(gene_id)
 ```
 
-# Step 8: Prepare annotation for GO enrichment
+## Step 8: Prepare annotation for GO enrichment
 ```r
 annotation <- read_delim("fullAnnotation.tsv.txt", delim = "\t", col_types = cols())
 
@@ -247,12 +247,12 @@ term2name <- annotation %>%
   distinct(term, .keep_all = TRUE)
 ```
 
-# Step 9: Define universe of tested genes (DESeq2 filtered genes)
+## Step 9: Define universe of tested genes (DESeq2 filtered genes)
 ```r
 all_genes <- rownames(dds)
 ```
 
-# Step 10: Run GO enrichment analysis (ORA)
+## Step 10: Run GO enrichment analysis (ORA)
 ```r
 ora_GOs <- enricher(gene = deg_gene_id,
                     universe = all_genes,
@@ -275,9 +275,9 @@ barplot(ora_GOs, showCategory = 10, label_format = 50, title = "Contrast of Cont
 ![dotplot](figures/dotplot_contrasts_l-vs-h-24h-VS-l-vs-h-0h.png)
 ![barplot](figures/barplot_contrasts_l-vs-h-24h-VS-l-vs-h-0h.png)
 
-#------------------------------------------
-# Step 11: Heatmap of top DEGs
-#------------------------------------------
+
+## Step 11: Heatmap of top DEGs
+```r
 cpm_norm <- counts(dds, normalized = TRUE)
 top_genes <- res_contrast_df %>%
   filter(padj < 0.05) %>%
@@ -302,5 +302,96 @@ pheatmap(zscore_matrix,
          annotation_col = annotation_col,
          main = "Contrast-of-Contrasts: Low vs High at 24h vs Low vs High at 0h",
          fontsize_col = 10)
-
+```
 ![pheatmap](figures/pheatmap_contrasts_l-vs-h-24h-VS-l-vs-h-0h.png)
+
+
+## Step 12: Add readable COG names
+```r
+cog_dict <- c(
+  "C"="Energy production and conversion", "D"="Cell cycle control, cell division, chromosome partitioning",
+  "E"="Amino acid transport and metabolism", "F"="Nucleotide transport and metabolism",
+  "G"="Carbohydrate transport and metabolism", "H"="Coenzyme transport and metabolism",
+  "I"="Lipid transport and metabolism", "J"="Translation, ribosomal structure and biogenesis",
+  "K"="Transcription", "L"="Replication, recombination and repair",
+  "M"="Cell wall/membrane/envelope biogenesis", "N"="Cell motility",
+  "O"="Posttranslational modification, protein turnover, chaperones",
+  "P"="Inorganic ion transport and metabolism", "Q"="Secondary metabolites biosynthesis, transport and catabolism",
+  "R"="General function prediction only", "S"="Function unknown",
+  "T"="Signal transduction mechanisms", "U"="Intracellular trafficking, secretion, vesicular transport",
+  "V"="Defense mechanisms", "W"="Extracellular structures", "Y"="Nuclear structure", "Z"="Cytoskeleton"
+)
+
+annotation <- annotation %>%
+  mutate(COG_name = cog_dict[COG_category])
+```
+
+## Step 13: Merge DEGs with COGs
+```r
+deg_up <- res_contrast_df %>% filter(log2FoldChange > 1)
+deg_down <- res_contrast_df %>% filter(log2FoldChange < -1)
+
+deg_up_annot <- deg_up %>%
+  left_join(dplyr::select(annotation, gene_id, COG_category, COG_name), by = "gene_id")
+
+deg_down_annot <- deg_down %>%
+  left_join(dplyr::select(annotation, gene_id, COG_category, COG_name), by = "gene_id")
+```
+
+## Step 14: Summarize functional categories
+```r
+universe_summary <- annotation %>%
+  filter(!is.na(COG_name)) %>%
+  group_by(COG_name) %>%
+  summarise(Universe = n_distinct(gene_id))
+
+up_summary <- deg_up_annot %>%
+  filter(!is.na(COG_name)) %>%
+  group_by(COG_name) %>%
+  summarise(Up = n_distinct(gene_id))
+
+down_summary <- deg_down_annot %>%
+  filter(!is.na(COG_name)) %>%
+  group_by(COG_name) %>%
+  summarise(Down = n_distinct(gene_id))
+
+summary_table <- universe_summary %>%
+  full_join(up_summary, by="COG_name") %>%
+  full_join(down_summary, by="COG_name") %>%
+  replace(is.na(.), 0) %>%
+  arrange(desc(Universe))
+
+# Export
+write_csv(summary_table, "Summary_COG_categories_contrast_of_contrasts.csv")
+print(summary_table, n=21)
+```
+
+```r
+> print(summary_table, n=21)
+# A tibble: 21 × 4
+   COG_name                                                     Universe    Up  Down
+   <chr>                                                           <int> <int> <int>
+ 1 Function unknown                                                13943  1674  2410
+ 2 Signal transduction mechanisms                                   4176   573   804
+ 3 Replication, recombination and repair                            3998   164   216
+ 4 Posttranslational modification, protein turnover, chaperones     3065   334   481
+ 5 Transcription                                                    2941   459   522
+ 6 Secondary metabolites biosynthesis, transport and catabolism     2059   370   405
+ 7 Carbohydrate transport and metabolism                            1974   301   388
+ 8 Amino acid transport and metabolism                              1621   194   166
+ 9 Translation, ribosomal structure and biogenesis                  1451    92   174
+10 Intracellular trafficking, secretion, vesicular transport        1127   116   136
+11 Lipid transport and metabolism                                   1080   161   195
+12 Energy production and conversion                                  940    99   213
+13 Inorganic ion transport and metabolism                            911   165   155
+14 Cell cycle control, cell division, chromosome partitioning        576    31    53
+15 Coenzyme transport and metabolism                                 533    45   100
+16 Defense mechanisms                                                432    87    78
+17 Cytoskeleton                                                      367    43    91
+18 Nucleotide transport and metabolism                               305    43    51
+19 Cell wall/membrane/envelope biogenesis                            297    36    71
+20 Nuclear structure                                                  13     1     2
+21 Extracellular structures                                            4     1     1
+```
+
+
