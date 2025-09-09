@@ -211,7 +211,6 @@ contrast_vector <- numeric(length(resultsNames(dds)))
 names(contrast_vector) <- resultsNames(dds)
 contrast_vector["group_high_24h_vs_high_0h"] <- 1
 contrast_vector["group_low_24h_vs_high_0h"]  <- -1
-contrast_vector["group_low_0h_vs_high_0h"]   <- -1
 
 res_contrast <- results(dds, contrast = contrast_vector)
 ```
@@ -371,27 +370,27 @@ print(summary_table, n=21)
 # A tibble: 21 × 4
    COG_name                                                     Universe    Up  Down
    <chr>                                                           <int> <int> <int>
- 1 Function unknown                                                13943  1674  2410
- 2 Signal transduction mechanisms                                   4176   573   804
- 3 Replication, recombination and repair                            3998   164   216
- 4 Posttranslational modification, protein turnover, chaperones     3065   334   481
- 5 Transcription                                                    2941   459   522
- 6 Secondary metabolites biosynthesis, transport and catabolism     2059   370   405
- 7 Carbohydrate transport and metabolism                            1974   301   388
- 8 Amino acid transport and metabolism                              1621   194   166
- 9 Translation, ribosomal structure and biogenesis                  1451    92   174
-10 Intracellular trafficking, secretion, vesicular transport        1127   116   136
-11 Lipid transport and metabolism                                   1080   161   195
-12 Energy production and conversion                                  940    99   213
-13 Inorganic ion transport and metabolism                            911   165   155
-14 Cell cycle control, cell division, chromosome partitioning        576    31    53
-15 Coenzyme transport and metabolism                                 533    45   100
-16 Defense mechanisms                                                432    87    78
-17 Cytoskeleton                                                      367    43    91
-18 Nucleotide transport and metabolism                               305    43    51
-19 Cell wall/membrane/envelope biogenesis                            297    36    71
-20 Nuclear structure                                                  13     1     2
-21 Extracellular structures                                            4     1     1
+ 1 Function unknown                                                13943   925  2055
+ 2 Signal transduction mechanisms                                   4176   346   710
+ 3 Replication, recombination and repair                            3998    94   183
+ 4 Posttranslational modification, protein turnover, chaperones     3065   189   371
+ 5 Transcription                                                    2941   240   448
+ 6 Secondary metabolites biosynthesis, transport and catabolism     2059   247   376
+ 7 Carbohydrate transport and metabolism                            1974   154   372
+ 8 Amino acid transport and metabolism                              1621    98   151
+ 9 Translation, ribosomal structure and biogenesis                  1451    50   129
+10 Intracellular trafficking, secretion, vesicular transport        1127    61   109
+11 Lipid transport and metabolism                                   1080    75   152
+12 Energy production and conversion                                  940    54   160
+13 Inorganic ion transport and metabolism                            911    89   129
+14 Cell cycle control, cell division, chromosome partitioning        576    12    48
+15 Coenzyme transport and metabolism                                 533    13    63
+16 Defense mechanisms                                                432    48    66
+17 Cytoskeleton                                                      367    11   109
+18 Nucleotide transport and metabolism                               305    20    46
+19 Cell wall/membrane/envelope biogenesis                            297    18    65
+20 Nuclear structure                                                  13     0     3
+21 Extracellular structures                                            4     2     0
 ```
 
 
