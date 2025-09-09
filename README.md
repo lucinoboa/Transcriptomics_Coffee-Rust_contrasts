@@ -77,10 +77,10 @@ fit <- glmFit(dge, design)
 # (high_24h - low_24h) - (high_0h - low_0h)
 lvl <- colnames(design)
 contrast_vector <- numeric(length(lvl))
-contrast_vector[which(lvl == "high_24h")] <- 1
-contrast_vector[which(lvl == "low_24h")]  <- -1
-contrast_vector[which(lvl == "high_0h")]  <- -1
-contrast_vector[which(lvl == "low_0h")]   <- 1
+contrast_vector[which(lvl == "low_24h")]   <- 1
+contrast_vector[which(lvl == "low_0h")]    <- -1
+contrast_vector[which(lvl == "high_24h")]  <- -1
+contrast_vector[which(lvl == "high_0h")]   <- 1
 
 lrt <- glmLRT(fit, contrast = contrast_vector)
 ```
@@ -136,7 +136,7 @@ pheatmap(zscore_matrix,
          main = "Heatmap of Contrast-of-Contrasts",
          fontsize_col = 10)
 ```
-![heatmap](figures/heatmap_contrasts_dge.png)
+![heatmap](figures/pheatmap_contrasts_l-h-24h-vs-l-h-0h.png)
 
 
 ## _GO Enrichment + COG Summary with DESeq2_
