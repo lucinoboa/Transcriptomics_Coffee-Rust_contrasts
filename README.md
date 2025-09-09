@@ -3,10 +3,10 @@ This script was developed to perform a contrast-of-contrasts analysis using edge
 
 # Part I: Heatmap of differentially expressed genes from contrasts of contrasts between high vs. low severity at 24 hours vs 0 hours. 
 
-## Function 
+**Function**  
 (low_24h - high_24h) - (low_0h - high_24 h)
 
-The workflow includes the following key steps:
+**The workflow includes the following key steps:**
 1. Preprocessing of raw counts: loading the count matrix, assigning groups, and filtering lowly expressed genes.
 2. Normalization and dispersion estimation: adjusting library sizes and estimating dispersion parameters to ensure robust statistical modeling.
 3. Contrast-of-contrasts testing: applying a generalized linear model (GLM) to compare expression differences across timepoints and treatments.
